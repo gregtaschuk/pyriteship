@@ -75,7 +75,7 @@ const FACES = [
   { idx: [3, 7, 6, 2], shade: SHADE_FRONT, stri: 0 }, // +Z front
 ]
 
-function collectCubeFaces(cx, cy, size, out) {
+function collectCubeFaces(cx, cy, size, striFlip, out) {
   if (size < 0.5) return
   for (const f of FACES) {
     const verts = f.idx.map(i => CUBE[i])
@@ -84,16 +84,16 @@ function collectCubeFaces(cx, cy, size, out) {
       return { x: cx + p.x, y: cy + p.y }
     })
     const depth = verts.reduce((a, q) => a + q.x + q.y + q.z, 0) / 4
-    out.push({ screen, depth, shade: f.shade, stri: f.stri })
+    out.push({ screen, depth, shade: f.shade, stri: f.stri ^ striFlip })
   }
 }
 
 function drawCrystal(ctx, crystal) {
-  const { x, y, size, twin } = crystal
+  const { x, y, size, twin, striFlip, twinStriFlip } = crystal
   const faces = []
-  collectCubeFaces(x, y, size, faces)
+  collectCubeFaces(x, y, size, striFlip, faces)
   if (twin) {
-    collectCubeFaces(x + twin.dx * size, y + twin.dy * size, size * twin.sizeRatio, faces)
+    collectCubeFaces(x + twin.dx * size, y + twin.dy * size, size * twin.sizeRatio, twinStriFlip, faces)
   }
   faces.sort((a, b) => a.depth - b.depth)
   for (const f of faces) drawFace(ctx, f)
@@ -108,6 +108,8 @@ function makeCrystal(w, h) {
     targetSize,
     age: 0,
     lifespan: 45 + Math.random() * 30,
+    striFlip: Math.random() < 0.5 ? 1 : 0,
+    twinStriFlip: Math.random() < 0.5 ? 1 : 0,
     twin: Math.random() < 0.2 ? {
       dx: (Math.random() - 0.5) * 0.9,
       dy: (Math.random() - 0.5) * 0.6,
