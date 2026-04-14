@@ -19,7 +19,7 @@ export default function App() {
 
       <main id="top">
         <section className="hero">
-          <p className="eyebrow">// blockchain architecture · rapid shipping</p>
+          <p className="eyebrow">// blockchain architecture · system design · rapid prototyping</p>
           <h1>
             pyrite consulting.<br/>
             <span className="accent">blockchain architecture.</span><br/>
