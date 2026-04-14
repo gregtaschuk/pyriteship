@@ -94,35 +94,44 @@ export default function App() {
           <h2>// experience</h2>
           <ul className="experience">
             <li>
-              <div className="exp-role">Technical Architect · <a className="exp-co" href="https://www.fidelitydigitalassets.com/" target="_blank" rel="noreferrer">Fidelity Investments</a></div>
-              <div className="exp-body">
-                Architecture lead on the Fidelity Digital Dollar — institutional stablecoin
-                design, reserves, settlement flows, and the integration surface between
-                a Fortune 100 financial services firm and public chains. Authored the{' '}
-                <a
-                  href="https://github.com/fidelity/mintable-token-ethereum-contract/blob/main/contracts/MintableToken.sol"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  MintableToken contract
-                </a>{' '}
-                the program uses onchain.
+              <img src="/logos/fidelity.svg" alt="" className="exp-logo" />
+              <div className="exp-content">
+                <div className="exp-role">Technical Architect · <a className="exp-co" href="https://www.fidelitydigitalassets.com/" target="_blank" rel="noreferrer">Fidelity Digital Assets</a></div>
+                <div className="exp-body">
+                  Architecture lead on the Fidelity Digital Dollar — institutional stablecoin
+                  design, reserves, settlement flows, and the integration surface between
+                  a Fortune 100 financial services firm and public chains. Authored the{' '}
+                  <a
+                    href="https://github.com/fidelity/mintable-token-ethereum-contract/blob/main/contracts/MintableToken.sol"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    MintableToken contract
+                  </a>{' '}
+                  the program uses onchain.
+                </div>
               </div>
             </li>
             <li>
-              <div className="exp-role">Integrations Engineer · <a className="exp-co" href="https://balancer.fi/" target="_blank" rel="noreferrer">Balancer</a></div>
-              <div className="exp-body">
-                Core team on Balancer v2, focused on integrations. Shipped the work
-                that plugged partner protocols, aggregators, and custom pool types
-                into the Vault — interfacing with external teams building on one of the
-                most-forked AMM designs in DeFi.
+              <img src="/logos/balancer.svg" alt="" className="exp-logo" />
+              <div className="exp-content">
+                <div className="exp-role">Integrations Engineer · <a className="exp-co" href="https://balancer.fi/" target="_blank" rel="noreferrer">Balancer</a></div>
+                <div className="exp-body">
+                  Core team on Balancer v2, focused on integrations. Shipped the work
+                  that plugged partner protocols, aggregators, and custom pool types
+                  into the Vault — interfacing with external teams building on one of the
+                  most-forked AMM designs in DeFi.
+                </div>
               </div>
             </li>
             <li>
-              <div className="exp-role">Blockchain Engineer · <a className="exp-co" href="https://consensys.io/" target="_blank" rel="noreferrer">ConsenSys</a></div>
-              <div className="exp-body">
-                Early Ethereum ecosystem work across client tooling and production
-                dapps.
+              <img src="/logos/consensys.svg" alt="" className="exp-logo" />
+              <div className="exp-content">
+                <div className="exp-role">Blockchain Engineer · <a className="exp-co" href="https://consensys.io/" target="_blank" rel="noreferrer">ConsenSys</a></div>
+                <div className="exp-body">
+                  Early Ethereum ecosystem work across client tooling and production
+                  dapps.
+                </div>
               </div>
             </li>
           </ul>
