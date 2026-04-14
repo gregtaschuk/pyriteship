@@ -148,6 +148,49 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
 }
 .card p { margin: 0; color: var(--ink-dim); font-size: 0.95rem; }
 
+.card-long {
+  padding: 2rem 2.25rem;
+  max-width: 78ch;
+}
+.card-long h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+.card-long p { margin: 0 0 1rem; line-height: 1.7; }
+.card-long p:last-child { margin-bottom: 0; }
+.card-long code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--accent);
+  background: rgba(124, 242, 184, 0.07);
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+}
+.card-long strong { color: var(--ink); font-weight: 600; }
+.card-stack {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--gold);
+  margin: 0 0 1.25rem !important;
+  letter-spacing: 0.02em;
+}
+.card-role {
+  border-left: 2px solid var(--gold);
+  padding-left: 1rem;
+  color: var(--ink-dim);
+  margin-top: 1.25rem !important;
+}
+
+.hero-compact { padding: 4rem 0 2.5rem; }
+
+.section-footnote {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin-top: 2rem;
+}
+.section-footnote a { color: var(--accent); }
+
 .two-col {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

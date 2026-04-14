@@ -1,22 +1,8 @@
-import PyriteBackground from './PyriteBackground.jsx'
+import Layout from './Layout.jsx'
 
 export default function App() {
   return (
-    <>
-      <PyriteBackground />
-      <header className="nav">
-        <a href="#top" className="brand">
-          <span className="brand-mark">◆</span>
-          <span className="brand-name">pyrite</span><span className="brand-rest">ship.xyz</span>
-        </a>
-        <nav>
-          <a href="#work">work</a>
-          <a href="#for">who</a>
-          <a href="#experience">experience</a>
-          <a href="#contact" className="cta">gm →</a>
-        </nav>
-      </header>
-
+    <Layout page="home">
       <main id="top">
         <section className="hero">
           <p className="eyebrow">// blockchain architecture · system design · rapid prototyping</p>
@@ -30,8 +16,16 @@ export default function App() {
             backends, indexing, and the infrastructure around them.
           </p>
           <div className="hero-cta">
-            <a href="#contact" className="btn btn-primary">get in touch</a>
-            <a href="#work" className="btn btn-ghost">what I do →</a>
+            <a
+              href="#/"
+              className="btn btn-primary"
+              onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
+            >get in touch</a>
+            <a
+              href="#/"
+              className="btn btn-ghost"
+              onClick={(e) => { e.preventDefault(); document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' }) }}
+            >what I do →</a>
           </div>
         </section>
 
@@ -69,6 +63,9 @@ export default function App() {
               body="Mental models and vocabulary for institutional teams working with crypto-native ones."
             />
           </div>
+          <p className="section-footnote">
+            → <a href="#/projects">see selected projects</a>
+          </p>
         </section>
 
         <section id="for" className="section section-alt">
@@ -116,12 +113,12 @@ export default function App() {
             <li>
               <img src="/logos/balancer.svg" alt="" className="exp-logo" />
               <div className="exp-content">
-                <div className="exp-role">Integrations Engineer · <a className="exp-co" href="https://balancer.fi/" target="_blank" rel="noreferrer">Balancer</a></div>
+                <div className="exp-role">Core / Integrations Engineer · <a className="exp-co" href="https://balancer.fi/" target="_blank" rel="noreferrer">Balancer</a></div>
                 <div className="exp-body">
-                  Core team on Balancer v2, focused on integrations. Shipped the work
-                  that plugged partner protocols, aggregators, and custom pool types
-                  into the Vault — interfacing with external teams building on one of the
-                  most-forked AMM designs in DeFi.
+                  Core team on Balancer v2. Worked on the initial Vault implementation
+                  as part of the team that shipped it, then moved into the Integrations
+                  group, working with partner protocols, aggregators, and teams building
+                  custom pool types on top of the Vault — one of the most-forked AMM designs in DeFi.
                 </div>
               </div>
             </li>
@@ -176,12 +173,7 @@ export default function App() {
           </a>
         </section>
       </main>
-
-      <footer>
-        <span>◆ pyrite consulting llc · {new Date().getFullYear()}</span>
-        <span className="footer-tag">seattle / remote / worldwide</span>
-      </footer>
-    </>
+    </Layout>
   )
 }
 
