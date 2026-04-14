@@ -1,6 +1,9 @@
+import PyriteBackground from './PyriteBackground.jsx'
+
 export default function App() {
   return (
     <>
+      <PyriteBackground />
       <header className="nav">
         <a href="#top" className="brand">
           <span className="brand-mark">◆</span>
@@ -19,7 +22,7 @@ export default function App() {
           <p className="eyebrow">// blockchain architecture · rapid shipping</p>
           <h1>
             pyrite consulting.<br/>
-            <span className="accent">blockchain architecture for teams who ship.</span>
+            <span className="accent">blockchain architecture for teams who <span className="ship">ship</span>.</span>
           </h1>
           <p className="lede">
             Pyrite is a one-engineer consultancy working with teams building on public
