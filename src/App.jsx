@@ -144,6 +144,14 @@ export default function App() {
             <a href="https://www.linkedin.com/in/taschuk" target="_blank" rel="noreferrer">
               linkedin ↗
             </a>
+            {' · '}
+            <a href="https://github.com/gtaschuk" target="_blank" rel="noreferrer">
+              github/gtaschuk ↗
+            </a>
+            {' · '}
+            <a href="https://github.com/gregtaschuk" target="_blank" rel="noreferrer">
+              github/gregtaschuk ↗
+            </a>
           </p>
         </section>
 
