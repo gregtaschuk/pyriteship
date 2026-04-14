@@ -133,6 +133,9 @@ export default function App() {
 
         <section id="about" className="section section-alt">
           <h2>// about</h2>
+          <div className="about-grid">
+            <img src="/headshot.jpg" alt="Greg Taschuk" className="headshot" />
+            <div>
           <p className="about-body">
             Pyrite is run by <strong>Greg Taschuk</strong>. A decade of software engineering,
             most recently at Fidelity on digital assets, with prior time on stablecoin
@@ -156,6 +159,8 @@ export default function App() {
               github/gregtaschuk ↗
             </a>
           </p>
+            </div>
+          </div>
         </section>
 
         <section id="contact" className="section">

@@ -189,6 +189,9 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
 
 .about-body { max-width: 68ch; color: var(--ink-dim); }
 .about-body strong { color: var(--ink); }
+.about-grid { display: flex; gap: 2rem; align-items: flex-start; }
+.headshot { width: 120px; height: 120px; border-radius: 50%; border: 1px solid var(--rule); flex-shrink: 0; object-fit: cover; margin-top: 3rem; }
+@media (max-width: 720px) { .about-grid { flex-direction: column; } .headshot { width: 90px; height: 90px; margin-top: 0; } }
 
 .contact-lede { max-width: 60ch; color: var(--ink-dim); margin-bottom: 1.5rem; }
 
