@@ -142,7 +142,6 @@ function makeCrystal(w, h) {
 
 function shouldSkip() {
   if (typeof window === 'undefined') return true
-  if (window.innerWidth < 720) return true
   const conn = navigator.connection
   if (conn && conn.saveData) return true
   if (navigator.deviceMemory && navigator.deviceMemory <= 2) return true
