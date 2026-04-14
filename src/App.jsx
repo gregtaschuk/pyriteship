@@ -22,10 +22,11 @@ export default function App() {
           <p className="eyebrow">// blockchain architecture · rapid shipping</p>
           <h1>
             pyrite consulting.<br/>
-            <span className="accent">blockchain architecture for teams who <span className="ship">ship</span>.</span>
+            <span className="accent">blockchain architecture.</span><br/>
+            <span className="accent"><span className="ship">ship</span> code.</span>
           </h1>
           <p className="lede">
-            Pyrite is Greg Taschuk's consultancy. Architecture, smart contracts,
+            Pyrite is Greg Taschuk's consulting business. Architecture, smart contracts,
             backends, indexing, and the infrastructure around them.
           </p>
           <div className="hero-cta">
