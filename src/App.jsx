@@ -25,9 +25,8 @@ export default function App() {
             <span className="accent">blockchain architecture for teams who <span className="ship">ship</span>.</span>
           </h1>
           <p className="lede">
-            Pyrite is a one-engineer consultancy working with teams building on public
-            chains. Architecture, smart contracts, backends, indexing, and the
-            infrastructure around them.
+            Pyrite is Greg Taschuk's consultancy. Architecture, smart contracts,
+            backends, indexing, and the infrastructure around them.
           </p>
           <div className="hero-cta">
             <a href="#contact" className="btn btn-primary">get in touch</a>
