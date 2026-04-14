@@ -94,7 +94,7 @@ export default function App() {
           <h2>// experience</h2>
           <ul className="experience">
             <li>
-              <div className="exp-role">Technical Architect · <span className="exp-co">Fidelity Investments</span></div>
+              <div className="exp-role">Technical Architect · <a className="exp-co" href="https://www.fidelitydigitalassets.com/" target="_blank" rel="noreferrer">Fidelity Investments</a></div>
               <div className="exp-body">
                 Architecture lead on the Fidelity Digital Dollar — institutional stablecoin
                 design, reserves, settlement flows, and the integration surface between
@@ -110,7 +110,7 @@ export default function App() {
               </div>
             </li>
             <li>
-              <div className="exp-role">Integrations Engineer · <span className="exp-co">Balancer</span></div>
+              <div className="exp-role">Integrations Engineer · <a className="exp-co" href="https://balancer.fi/" target="_blank" rel="noreferrer">Balancer</a></div>
               <div className="exp-body">
                 Core team on Balancer v2, focused on integrations. Shipped the work
                 that plugged partner protocols, aggregators, and custom pool types
@@ -119,7 +119,7 @@ export default function App() {
               </div>
             </li>
             <li>
-              <div className="exp-role">Blockchain Engineer · <span className="exp-co">ConsenSys</span></div>
+              <div className="exp-role">Blockchain Engineer · <a className="exp-co" href="https://consensys.io/" target="_blank" rel="noreferrer">ConsenSys</a></div>
               <div className="exp-body">
                 Early Ethereum ecosystem work across client tooling and production
                 dapps.
