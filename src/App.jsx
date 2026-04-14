@@ -30,7 +30,7 @@ export default function App() {
             infrastructure around them.
           </p>
           <div className="hero-cta">
-            <a href="#contact" className="btn btn-primary">start a conversation</a>
+            <a href="#contact" className="btn btn-primary">get in touch</a>
             <a href="#work" className="btn btn-ghost">what I do →</a>
           </div>
         </section>
@@ -41,32 +41,32 @@ export default function App() {
             <Card
               tag="arch"
               title="Protocol & System Design"
-              body="EVM, L2s, app-chains, rollups. Custody, settlement, tokenization, cross-chain. I help you pick the chain, the libraries, and — more importantly — what not to build yourself."
+              body="EVM, L2s, app-chains, rollups. Custody, settlement, tokenization, cross-chain."
             />
             <Card
               tag="impl"
               title="Smart Contracts & Backends"
-              body="Solidity and the services around it. Foundry test suites. Indexers, keepers, relayers, RPC infra. Deployed, monitored, handed off with runbooks."
+              body="Solidity, Foundry, indexers, keepers, relayers, RPC infra."
             />
             <Card
               tag="stbl"
               title="Stablecoins & Payments Rails"
-              body="Issuance, reserves, attestation flows, on/off-ramps, compliance touchpoints. Experience with this part of the stack at production scale."
+              body="Issuance, reserves, attestation, on/off-ramps, compliance touchpoints."
             />
             <Card
               tag="ddil"
               title="Technical Due Diligence"
-              body="Independent review of a protocol, vendor, or codebase before you commit capital, partner, or ship. Written findings your risk team and your engineers can both read."
+              body="Independent review of a protocol, vendor, or codebase. Written findings."
             />
             <Card
               tag="cto"
               title="Fractional CTO / Advisory"
-              body="Embedded with early-stage teams. Roadmap, hiring, architecture review, scope decisions. A few hours a week."
+              body="Embedded with early-stage teams. Architecture, hiring, scope. A few hours a week."
             />
             <Card
               tag="xfer"
               title="TradFi → Onchain Translation"
-              body="For banks and asset managers: the mental models, failure modes, and vocabulary to work with crypto-native teams as peers."
+              body="Mental models and vocabulary for institutional teams working with crypto-native ones."
             />
           </div>
         </section>
@@ -78,16 +78,14 @@ export default function App() {
               <h3>tradfi going onchain</h3>
               <p>
                 Banks, asset managers, and payments firms touching stablecoins,
-                tokenized assets, or onchain settlement. Work with a builder who is
-                fluent in both worlds.
+                tokenized assets, or onchain settlement.
               </p>
             </div>
             <div>
               <h3>startups shipping v1</h3>
               <p>
-                Founders who need an experienced hand to pressure-test the stack,
-                unblock hard problems, and ship the first mainnet version — without
-                hiring a full senior team up front.
+                Early-stage teams shipping their first mainnet version who want an
+                experienced hand on the architecture.
               </p>
             </div>
           </div>
@@ -142,10 +140,6 @@ export default function App() {
             infrastructure and blockchain architecture. Swarthmore CS. Based in Seattle,
             works with teams anywhere.
           </p>
-          <p className="about-body">
-            The name is a joke — <em>pyrite</em> is fool's gold. The work is building
-            systems that hold up when real money is moving.
-          </p>
           <p>
             <a href="https://www.linkedin.com/in/taschuk" target="_blank" rel="noreferrer">
               linkedin ↗
@@ -164,13 +158,12 @@ export default function App() {
         </section>
 
         <section id="contact" className="section">
-          <h2>// gm</h2>
+          <h2>// contact</h2>
           <p className="contact-lede">
-            Short engagements, long engagements, or a one-hour call. Describe what
-            you're building and the timeline.
+            Short or long engagements. Email is best.
           </p>
-          <a className="btn btn-primary" href="mailto:greg@pyriteship.xyz">
-            greg@pyriteship.xyz →
+          <a className="email-link" href="mailto:greg@pyriteship.xyz">
+            → greg@pyriteship.xyz
           </a>
         </section>
       </main>

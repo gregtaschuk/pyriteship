@@ -15,7 +15,7 @@
 html, body { margin: 0; padding: 0; }
 html { background: var(--bg); }
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: transparent;
   color: var(--ink);
   line-height: 1.6;
@@ -77,14 +77,13 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
   margin: 0 0 1.25rem;
 }
 .hero h1 {
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  line-height: 1.05;
+  font-size: clamp(2.2rem, 5.4vw, 3.4rem);
+  line-height: 1.1;
   margin: 0 0 1.5rem;
-  max-width: 16ch;
-  letter-spacing: -0.02em;
-  font-weight: 800;
+  max-width: 22ch;
+  font-weight: 500;
 }
-.hero h1 .accent { color: var(--ink-dim); font-weight: 800; }
+.hero h1 .accent { color: var(--ink-dim); font-weight: 500; }
 .hero h1 .ship { color: var(--gold-bright); }
 .lede {
   font-size: 1.1rem;
@@ -124,13 +123,13 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
   gap: 1rem;
 }
 .card {
-  background: var(--bg-alt);
+  background: rgba(17, 17, 20, 0.75);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 1.5rem;
   transition: border-color 120ms;
 }
-.card:hover { border-color: var(--gold); }
+.card:hover { border-color: var(--accent); }
 .card-tag {
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -174,8 +173,8 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
 .experience li {
   padding: 1.25rem 1.5rem;
   border-left: 2px solid var(--gold);
-  background: var(--bg-alt);
-  border-radius: 0 6px 6px 0;
+  background: transparent;
+  border-radius: 0;
 }
 .exp-role {
   font-family: var(--mono);
@@ -208,7 +207,19 @@ footer {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+footer > span:first-child::before {
+  content: "[ online ] ";
+  color: var(--accent);
+}
 .footer-tag { color: var(--gold); }
+
+.email-link {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--gold-bright);
+  display: inline-block;
+}
+.email-link:hover { text-decoration: underline; }
 
 @media (max-width: 640px) {
   .nav { flex-direction: column; gap: 1rem; padding: 1rem; }
