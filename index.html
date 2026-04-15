@@ -12,6 +12,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // NFC cards write bare /tools/<hex> URLs; rewrite into the hash router.
+      (function () {
+        var p = window.location.pathname;
+        if (p !== '/' && !window.location.hash) {
+          window.location.replace('/#' + p + window.location.search);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

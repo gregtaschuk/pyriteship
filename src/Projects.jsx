@@ -80,22 +80,12 @@ export default function Projects() {
               OpenZeppelin's upgradeable stack. Mint allocation, transfer restrictions,
               and upgrade authorization are separated into distinct modules so that
               issuance, compliance, and governance functions can be held by different
-              keys. Transfers to the contract itself are blocked, and a global pause
-              halts all token operations. The contract exposes a
-              custom <code>decreaseAllowance</code> that works even for restricted
-              users, so a compromised address can have its outstanding approvals
-              revoked. Upgrade authorization is role-gated and checks that the new
-              implementation contains deployed code before accepting it. The whole
-              contract is deliberately small and auditable — the shape an institutional
-              issuer needs: every privileged action emits events for downstream
-              reconciliation, and every reversible state change is reachable only
-              through an explicit, documented admin role.
-            </p>
+              keys. </p>
             <p>
               <strong>How Fidelity launched it.</strong> Issued onchain by Fidelity
               Digital Assets as part of the firm's broader institutional digital-asset
               program, sitting alongside Fidelity's existing custody and execution
-              infrastructure. The contract is the settlement primitive the Digital
+              infrastructure. The contract is the settlement primitive the Fidelity Digital
               Dollar program uses onchain.
             </p>
             <p>

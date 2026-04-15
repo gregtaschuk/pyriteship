@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 import Projects from './Projects.jsx'
+import Tool from './Tool.jsx'
 import './styles.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,6 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/tools/:hex" element={<Tool />} />
       </Routes>
     </HashRouter>
   </React.StrictMode>,
