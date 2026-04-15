@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Layout from './Layout.jsx'
 
+// TODO: point at the hosted tool-rental subgraph once it's deployed.
+// Until then, /tools/<cardKeyHash> will surface the "couldn't load" state.
 const SUBGRAPH_URL = 'http://localhost:8000/subgraphs/name/tool-rental/tool-rental'
-const IPFS_GATEWAY = 'http://localhost:8080/ipfs/'
+const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
 
 const QUERY = `
-  query ToolByCardKey($x: Bytes!, $y: Bytes!) {
-    tools(where: { cardKeyX: $x, cardKeyY: $y }, first: 1) {
+  query ToolByCardKeyHash($cardKeyHash: Bytes!) {
+    tools(where: { cardKeyHash: $cardKeyHash }, first: 1) {
       id
       owner
       metadataUri
@@ -39,10 +41,9 @@ function formatUsdc(raw) {
 }
 
 export default function Tool() {
-  const { hex } = useParams()
-  const valid = typeof hex === 'string' && /^[0-9a-f]{128}$/.test(hex)
-  const cardKeyX = valid ? '0x' + hex.slice(0, 64) : null
-  const cardKeyY = valid ? '0x' + hex.slice(64) : null
+  const { cardKeyHash } = useParams()
+  const valid = typeof cardKeyHash === 'string' && /^[0-9a-f]{64}$/.test(cardKeyHash)
+  const cardKeyHashArg = valid ? '0x' + cardKeyHash : null
 
   const [state, setState] = useState({ status: valid ? 'loading' : 'invalid', tool: null, error: null })
 
@@ -53,7 +54,7 @@ export default function Tool() {
     fetch(SUBGRAPH_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ query: QUERY, variables: { x: cardKeyX, y: cardKeyY } }),
+      body: JSON.stringify({ query: QUERY, variables: { cardKeyHash: cardKeyHashArg } }),
     })
       .then(async (res) => {
         if (!res.ok) throw new Error(`subgraph responded ${res.status}`)
@@ -70,27 +71,27 @@ export default function Tool() {
         setState({ status: 'error', tool: null, error: err.message })
       })
     return () => { cancelled = true }
-  }, [valid, cardKeyX, cardKeyY])
+  }, [valid, cardKeyHashArg])
 
   return (
     <Layout page="tool">
       <main id="top">
         <section className="hero hero-compact">
           <p className="eyebrow">// tool rental · nfc card</p>
-          <ToolBody state={state} hex={hex} valid={valid} />
+          <ToolBody state={state} cardKeyHash={cardKeyHash} valid={valid} />
         </section>
       </main>
     </Layout>
   )
 }
 
-function ToolBody({ state, hex, valid }) {
+function ToolBody({ state, cardKeyHash, valid }) {
   if (!valid) {
     return (
       <>
         <h1>not a valid tool card.<br/><span className="accent">check the link.</span></h1>
         <p className="lede">
-          This URL doesn't look like a tool card identifier. Expected 128 lowercase
+          This URL doesn't look like a tool card identifier. Expected 64 lowercase
           hex characters after <code>/tools/</code>.
         </p>
       </>
@@ -112,6 +113,7 @@ function ToolBody({ state, hex, valid }) {
         <h1>couldn't load this tool.</h1>
         <p className="lede">The subgraph didn't respond. Try again in a moment.</p>
         <p className="section-footnote"><code>{state.error}</code></p>
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
       </>
     )
   }
@@ -124,6 +126,7 @@ function ToolBody({ state, hex, valid }) {
           This card is valid but no tool has been minted against it yet. If you're
           the owner, finish provisioning in the Tool Rental app.
         </p>
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
       </>
     )
   }
@@ -134,7 +137,6 @@ function ToolBody({ state, hex, valid }) {
   const description = tool.metadata?.description
   const listing = tool.listing
   const dailyRate = listing?.active ? formatUsdc(listing.dailyRate) : null
-  const appUrl = `toolrental://card/${hex}`
 
   return (
     <>
@@ -165,15 +167,23 @@ function ToolBody({ state, hex, valid }) {
           )}
         </p>
 
-        <div className="hero-cta">
-          <a href={appUrl} className="btn btn-primary">open in Tool Rental app →</a>
-        </div>
-
-        <div className="store-badges">
-          <a href="#" className="store-badge" aria-disabled="true">Get it on Google Play</a>
-          <a href="#" className="store-badge" aria-disabled="true">Download on the App Store</a>
-        </div>
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
       </article>
+    </>
+  )
+}
+
+function DeepLinkAndStores({ cardKeyHash }) {
+  const appUrl = `toolrental://card/${cardKeyHash}`
+  return (
+    <>
+      <div className="hero-cta">
+        <a href={appUrl} className="btn btn-primary">open in Tool Rental app →</a>
+      </div>
+      <div className="store-badges">
+        <a href="#" className="store-badge" aria-disabled="true">Get it on Google Play</a>
+        <a href="#" className="store-badge" aria-disabled="true">Download on the App Store</a>
+      </div>
     </>
   )
 }

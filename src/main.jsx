@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/tools/:hex" element={<Tool />} />
+        <Route path="/tools/:cardKeyHash" element={<Tool />} />
       </Routes>
     </HashRouter>
   </React.StrictMode>,

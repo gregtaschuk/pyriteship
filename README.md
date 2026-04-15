@@ -22,7 +22,7 @@ Every push to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ru
    git init -b main
    git add .
    git commit -m "Initial site"
-   git remote add origin git@github.com:taschuk/pyriteship.git
+   git remote add origin git@github.com:gregtaschuk/pyriteship.git
    git push -u origin main
    ```
 2. **Enable Pages**: Repo → Settings → Pages → Source: **GitHub Actions**.

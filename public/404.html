@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting… — pyrite.rocks</title>
+    <script>
+      // GitHub Pages serves this file for any unknown path. NFC cards emit
+      // bare /tools/<cardKeyHash> URLs; redirect them into the hash router
+      // so the React app in index.html picks them up.
+      (function () {
+        var p = window.location.pathname;
+        var q = window.location.search;
+        window.location.replace('/#' + p + q);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
