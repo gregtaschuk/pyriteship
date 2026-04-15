@@ -3,10 +3,11 @@ import { useEffect, useRef } from 'react'
 const COS30 = Math.cos(Math.PI / 6)
 const SIN30 = 0.5
 
-const SHADE_TOP = 'rgba(150, 112, 32, 0.78)'
-const SHADE_RIGHT = 'rgba(92, 66, 14, 0.78)'
-const SHADE_FRONT = 'rgba(44, 30, 6, 0.82)'
-const EDGE = 'rgba(168, 124, 40, 0.7)'
+const SHADE_TOP   = { dark: 'rgba(64, 54, 22, 0.9)', light: 'rgba(108, 92, 44, 0.9)' }
+const SHADE_RIGHT = { dark: 'rgba(32, 26, 10, 0.9)', light: 'rgba(58, 48, 20, 0.9)' }
+const SHADE_FRONT = { dark: 'rgba(14, 10, 4, 0.95)', light: 'rgba(26, 22, 8, 0.95)' }
+const RIM = 'rgba(168, 144, 76, 0.8)'
+const EDGE_DIM = 'rgba(0, 0, 0, 0.6)'
 
 function project(x, y, z) {
   return {
@@ -34,48 +35,47 @@ function drawFace(ctx, face) {
   ctx.lineTo(s2.x, s2.y)
   ctx.lineTo(s3.x, s3.y)
   ctx.closePath()
-  ctx.fillStyle = face.shade
+  const grad = ctx.createLinearGradient(s0.x, s0.y, s2.x, s2.y)
+  grad.addColorStop(0, face.shade.dark)
+  grad.addColorStop(1, face.shade.light)
+  ctx.fillStyle = grad
   ctx.fill()
-  ctx.strokeStyle = EDGE
-  ctx.lineWidth = 1
-  ctx.stroke()
 
-  ctx.lineCap = 'round'
-  const seed = Math.abs(Math.sin(s0.x * 0.013 + s0.y * 0.027))
-  const N = 10 + Math.floor(seed * 11)
-  for (let i = 1; i < N; i++) {
-    const jitter = Math.sin(i * 12.9898) * 0.35
-    const t = (i + jitter) / N
-    const inset = 0.08 + (Math.sin(i * 7.3) + 1) * 0.08
-    let ax, ay, bx, by
-    if (face.stri === 0) {
-      ax = s0.x + (s3.x - s0.x) * t + (s1.x - s0.x) * inset
-      ay = s0.y + (s3.y - s0.y) * t + (s1.y - s0.y) * inset
-      bx = s1.x + (s2.x - s1.x) * t - (s1.x - s0.x) * inset
-      by = s1.y + (s2.y - s1.y) * t - (s1.y - s0.y) * inset
-    } else {
-      ax = s0.x + (s1.x - s0.x) * t + (s3.x - s0.x) * inset
-      ay = s0.y + (s1.y - s0.y) * t + (s3.y - s0.y) * inset
-      bx = s3.x + (s2.x - s3.x) * t - (s3.x - s0.x) * inset
-      by = s3.y + (s2.y - s3.y) * t - (s3.y - s0.y) * inset
-    }
-    const alpha = 0.18 + (Math.sin(i * 4.7) + 1) * 0.1
-    ctx.strokeStyle = `rgba(0, 0, 0, ${alpha.toFixed(3)})`
-    ctx.lineWidth = 0.5 + (Math.sin(i * 2.1) + 1) * 0.35
+  // Find the top-most edge (two vertices with smallest y) and highlight it.
+  const verts = [s0, s1, s2, s3]
+  const order = [0, 1, 2, 3].sort((a, b) => verts[a].y - verts[b].y)
+  const topA = order[0]
+  const topB = order[1]
+  const edges = [[0, 1], [1, 2], [2, 3], [3, 0]]
+  ctx.lineWidth = 0.75
+  ctx.strokeStyle = EDGE_DIM
+  for (const [a, b] of edges) {
+    const isRim = (a === topA && b === topB) || (a === topB && b === topA)
+    if (isRim) continue
     ctx.beginPath()
-    ctx.moveTo(ax, ay)
-    ctx.lineTo(bx, by)
+    ctx.moveTo(verts[a].x, verts[a].y)
+    ctx.lineTo(verts[b].x, verts[b].y)
+    ctx.stroke()
+  }
+  for (const [a, b] of edges) {
+    const isRim = (a === topA && b === topB) || (a === topB && b === topA)
+    if (!isRim) continue
+    ctx.strokeStyle = RIM
+    ctx.lineWidth = 1.25
+    ctx.beginPath()
+    ctx.moveTo(verts[a].x, verts[a].y)
+    ctx.lineTo(verts[b].x, verts[b].y)
     ctx.stroke()
   }
 }
 
 const FACES = [
-  { idx: [4, 5, 6, 7], shade: SHADE_TOP,   stri: 0 }, // +Y top
-  { idx: [1, 5, 6, 2], shade: SHADE_RIGHT, stri: 1 }, // +X right
-  { idx: [3, 7, 6, 2], shade: SHADE_FRONT, stri: 0 }, // +Z front
+  { idx: [4, 5, 6, 7], shade: SHADE_TOP   }, // +Y top
+  { idx: [1, 5, 6, 2], shade: SHADE_RIGHT }, // +X right
+  { idx: [3, 7, 6, 2], shade: SHADE_FRONT }, // +Z front
 ]
 
-function collectCubeFaces(cx, cy, size, striFlip, out) {
+function collectCubeFaces(cx, cy, size, out) {
   if (size < 0.5) return
   for (const f of FACES) {
     const verts = f.idx.map(i => CUBE[i])
@@ -84,16 +84,16 @@ function collectCubeFaces(cx, cy, size, striFlip, out) {
       return { x: cx + p.x, y: cy + p.y }
     })
     const depth = verts.reduce((a, q) => a + q.x + q.y + q.z, 0) / 4
-    out.push({ screen, depth, shade: f.shade, stri: f.stri ^ striFlip })
+    out.push({ screen, depth, shade: f.shade })
   }
 }
 
 function drawCrystal(ctx, crystal) {
-  const { x, y, size, twin, striFlip, twinStriFlip } = crystal
+  const { x, y, size, satellites } = crystal
   const faces = []
-  collectCubeFaces(x, y, size, striFlip, faces)
-  if (twin) {
-    collectCubeFaces(x + twin.dx * size, y + twin.dy * size, size * twin.sizeRatio, twinStriFlip, faces)
+  collectCubeFaces(x, y, size, faces)
+  for (const s of satellites) {
+    collectCubeFaces(x + s.dx * size, y + s.dy * size, size * s.sizeRatio, faces)
   }
   faces.sort((a, b) => a.depth - b.depth)
   for (const f of faces) drawFace(ctx, f)
@@ -101,6 +101,17 @@ function drawCrystal(ctx, crystal) {
 
 function makeCrystal(w, h) {
   const targetSize = 22 + Math.random() * 48
+  const count = 2 + Math.floor(Math.random() * 4) // 2–5 cubes per cluster
+  const satellites = []
+  for (let i = 0; i < count - 1; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const dist = 0.7 + Math.random() * 1.1
+    satellites.push({
+      dx: Math.cos(angle) * dist,
+      dy: Math.sin(angle) * dist * 0.65,
+      sizeRatio: 0.45 + Math.random() * 0.6,
+    })
+  }
   return {
     x: Math.random() * w,
     y: Math.random() * h,
@@ -108,13 +119,7 @@ function makeCrystal(w, h) {
     targetSize,
     age: 0,
     lifespan: 45 + Math.random() * 30,
-    striFlip: Math.random() < 0.5 ? 1 : 0,
-    twinStriFlip: Math.random() < 0.5 ? 1 : 0,
-    twin: Math.random() < 0.2 ? {
-      dx: (Math.random() - 0.5) * 0.9,
-      dy: (Math.random() - 0.5) * 0.6,
-      sizeRatio: 0.6 + Math.random() * 0.45,
-    } : null,
+    satellites,
   }
 }
 
