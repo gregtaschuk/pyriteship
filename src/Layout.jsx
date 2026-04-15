@@ -18,7 +18,7 @@ export default function Layout({ page, children }) {
       <header className="nav">
         <a href="#/" className="brand" onClick={scrollToId('top')}>
           <span className="brand-mark">◆</span>
-          <span className="brand-name">pyrite</span><span className="brand-rest">ship.xyz</span>
+          <span className="brand-name">pyrite</span><span className="brand-rest">.rocks</span>
         </a>
         <nav>
           {isHome ? (
@@ -32,7 +32,7 @@ export default function Layout({ page, children }) {
             <>
               <a href="#/">home</a>
               <a href="#/projects" aria-current="page">projects</a>
-              <a href="mailto:greg@pyriteship.xyz" className="cta">gm →</a>
+              <a href="mailto:greg@pyrite.rocks" className="cta">gm →</a>
             </>
           )}
         </nav>

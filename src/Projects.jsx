@@ -9,7 +9,7 @@ export default function Projects() {
           <h1>
             projects.<br/>
             <span className="accent">things I've built,</span><br/>
-            <span className="accent"><span className="ship">how</span> and why.</span>
+            <span className="accent"><span className="heroEmphasis">how</span> and why.</span>
           </h1>
           <p className="lede">
             Three projects that show how I think about protocol design, smart contract
@@ -49,11 +49,11 @@ export default function Projects() {
               replacement, default.
             </p>
             <p className="card-role">
-              <strong>My role.</strong> Sole author, end-to-end. Protocol design,
-              Solidity (Foundry + Hardhat), the Java Card applet, a TypeScript
+              <strong>My role.</strong> Designed with Claude, end-to-end. Protocol design,
+              Solidity (Foundry + Hardhat), NFC Java Card applet, a
               provisioner CLI that flashes blank cards over USB NFC via GlobalPlatform
-              and mints the matching NFT, an Express backend, a The Graph subgraph,
-              and a React Native mobile client. Coming soon to Base L2.
+              and mints the matching NFT, a The Graph subgraph,
+              and a React Native mobile client. Coming soon to Base Sepolia.
             </p>
           </article>
         </section>
@@ -169,8 +169,8 @@ export default function Projects() {
             If you want something like one of these built — or audited, or rescued —
             email is best.
           </p>
-          <a className="email-link" href="mailto:greg@pyriteship.xyz">
-            → greg@pyriteship.xyz
+          <a className="email-link" href="mailto:greg@pyrite.rocks">
+            → greg@pyrite.rocks
           </a>
         </section>
       </main>

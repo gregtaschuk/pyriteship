@@ -84,7 +84,7 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
   font-weight: 500;
 }
 .hero h1 .accent { color: var(--ink-dim); font-weight: 500; }
-.hero h1 .ship { color: var(--gold-bright); }
+.hero h1 .heroEmphasis { color: var(--gold-bright); }
 .lede {
   font-size: 1.1rem;
   color: var(--ink-dim);

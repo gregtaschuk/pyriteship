@@ -9,7 +9,7 @@ export default function App() {
           <h1>
             pyrite consulting.<br/>
             <span className="accent">blockchain architecture.</span><br/>
-            <span className="accent"><span className="ship">ship</span> code.</span>
+            <span className="accent"><span className="heroEmphasis">rock</span> the chain.</span>
           </h1>
           <p className="lede">
             Pyrite is Greg Taschuk's consulting business. Architecture, smart contracts,
@@ -168,8 +168,8 @@ export default function App() {
           <p className="contact-lede">
             Short or long engagements. Email is best.
           </p>
-          <a className="email-link" href="mailto:greg@pyriteship.xyz">
-            → greg@pyriteship.xyz
+          <a className="email-link" href="mailto:greg@pyrite.rocks">
+            → greg@pyrite.rocks
           </a>
         </section>
       </main>

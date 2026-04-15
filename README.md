@@ -1,4 +1,4 @@
-# pyriteship.xyz
+# pyrite.rocks
 
 Marketing site for Pyrite Consulting LLC. Vite + React, deployed to GitHub Pages.
 
@@ -26,14 +26,14 @@ Every push to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ru
    git push -u origin main
    ```
 2. **Enable Pages**: Repo → Settings → Pages → Source: **GitHub Actions**.
-3. **Custom domain**: Repo → Settings → Pages → Custom domain → `pyriteship.xyz` → Save. Check "Enforce HTTPS" once the cert provisions (can take ~15 min after DNS is live).
-   - `public/CNAME` already contains `pyriteship.xyz` so it survives rebuilds.
+3. **Custom domain**: Repo → Settings → Pages → Custom domain → `pyrite.rocks` → Save. Check "Enforce HTTPS" once the cert provisions (can take ~15 min after DNS is live).
+   - `public/CNAME` already contains `pyrite.rocks` so it survives rebuilds.
 
 ## GoDaddy DNS configuration
 
-In GoDaddy → **My Products → pyriteship.xyz → DNS**:
+In GoDaddy → **My Products → pyrite.rocks → DNS**:
 
-### Apex (`pyriteship.xyz`) — four A records
+### Apex (`pyrite.rocks`) — four A records
 
 | Type | Name | Value            | TTL      |
 |------|------|------------------|----------|
@@ -54,16 +54,16 @@ Delete any GoDaddy-default `A @ → Parked` record first.
 
 ### Email (optional, later)
 
-If you want `greg@pyriteship.xyz` to actually receive mail, you'll need MX records pointing at a mail provider (Google Workspace, Fastmail, Proton, Zoho, etc.). Until then, the `mailto:` link on the site will open the user's mail client but nothing will deliver. Easiest cheap option: Fastmail or Zoho Mail — both give you MX/SPF/DKIM records to paste into GoDaddy.
+If you want `greg@pyrite.rocks` to actually receive mail, you'll need MX records pointing at a mail provider (Google Workspace, Fastmail, Proton, Zoho, etc.). Until then, the `mailto:` link on the site will open the user's mail client but nothing will deliver. Easiest cheap option: Fastmail or Zoho Mail — both give you MX/SPF/DKIM records to paste into GoDaddy.
 
 ## Verification
 
 After DNS propagates (usually 15–60 min for a fresh domain):
 
 ```bash
-dig pyriteship.xyz +short          # should list the four 185.199.x.153 IPs
-dig www.pyriteship.xyz +short      # should CNAME to taschuk.github.io
-curl -I https://pyriteship.xyz     # 200 OK once cert is provisioned
+dig pyrite.rocks +short          # should list the four 185.199.x.153 IPs
+dig www.pyrite.rocks +short      # should CNAME to taschuk.github.io
+curl -I https://pyrite.rocks     # 200 OK once cert is provisioned
 ```
 
 ## Structure
