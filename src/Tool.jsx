@@ -14,7 +14,10 @@ const QUERY = `
       owner
       metadataUri
       metadata { name description image }
-      listing { active minimumFee dailyRate borrowerDeposit }
+      offer {
+        active
+        metadata { minimumFee dailyRate borrowerDeposit }
+      }
     }
   }
 `
@@ -135,8 +138,8 @@ function ToolBody({ state, cardKeyHash, valid }) {
   const name = tool.metadata?.name || `Tool #${tool.id}`
   const image = resolveIpfs(tool.metadata?.image)
   const description = tool.metadata?.description
-  const listing = tool.listing
-  const dailyRate = listing?.active ? formatUsdc(listing.dailyRate) : null
+  const offer = tool.offer
+  const dailyRate = offer?.active ? formatUsdc(offer.metadata?.dailyRate) : null
 
   return (
     <>
@@ -157,7 +160,7 @@ function ToolBody({ state, cardKeyHash, valid }) {
         </p>
 
         <p className="tool-listing">
-          {listing?.active ? (
+          {offer?.active ? (
             <>
               <strong className="accent">Available to rent</strong>
               {dailyRate && <> · {dailyRate} USDC / day</>}
