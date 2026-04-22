@@ -34,26 +34,66 @@ export default function Projects() {
             </p>
             <p>
               <strong>Design.</strong> A Java Card applet on J3R180 / JCOP4 hardware
-              exposes two APDUs — <code>getPubKey</code> and <code>sign(hash)</code> —
-              using the card's native P-256 accelerator. An ERC-721 / ERC-4907{' '}
+              exposes a handful of ISO 7816 APDUs — read public key, sign hash,
+              return counter, return rental id — using the card's native P-256
+              accelerator. An ERC-721 / ERC-4907{' '}
               <code>ToolNFT</code> immutably binds each physical tool to its card's
               public key at mint time. On Base, P-256 verification lands through the
               EIP-7212 precompile (~3.4k gas) instead of a ~200k-gas pure-Solidity
               fallback, which is what makes the whole model viable onchain.
-              Challenge nonces come from a short-TTL Redis store in the backend, and
-              every signature commits to tool id, phase (<code>start</code> vs{' '}
-              <code>end</code>), chain id, and escrow address, so phases can't be
-              confused or replayed. Settlement is pull-based via{' '}
-              <code>withdrawTokens()</code> to shrink the reentrancy surface and
-              handle edge cases cleanly — mutual consent returns, lost-card
-              replacement, default.
+              Challenges are committed onchain with a 5-minute TTL — no backend,
+              and the block timestamp is a stronger freshness witness than any
+              off-chain cache. Every signature is EIP-712 typed data binding tool
+              or rental id, phase (<code>start</code> vs <code>end</code>), chain
+              id, and escrow address, so phases can't be confused or replayed.
+              Settlement is pull-based via <code>withdrawTokens()</code> to shrink
+              the reentrancy surface and handle edge cases cleanly — mutual consent
+              returns, lost-card replacement, default.
+            </p>
+            <p>
+              <strong>Listings.</strong> Off-chain signed offers. A lender signs an
+              EIP-712 <code>RentalOffer</code> struct with their wallet, pins the{' '}
+              <code>{'{ offer, signature }'}</code> JSON to IPFS, and the escrow
+              records only the CID onchain (~30–50k gas vs a full storage write).
+              The same signed offer serves unlimited rentals until the lender
+              rotates the nonce; a single <code>delistTool</code> call invalidates
+              everything outstanding. Offers can also be targeted to a specific
+              borrower for share-a-link private rentals.
+            </p>
+            <p>
+              <strong>Live on Base Sepolia.</strong>{' '}
+              <code>ToolNFT</code> at{' '}
+              <a
+                href="https://sepolia.basescan.org/address/0xFbf20Ea82711E21862803aD79e38fB98F2B3a1bD"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <code>0xFbf2…a1bD</code>
+              </a>
+              , <code>RentalEscrow</code> at{' '}
+              <a
+                href="https://sepolia.basescan.org/address/0xE82886e55Fd866B1425D15039C27a253c891954c"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <code>0xE828…954c</code>
+              </a>
+              . Collection browsable on{' '}
+              <a
+                href="https://testnets.opensea.io/assets/base-sepolia/0xFbf20Ea82711E21862803aD79e38fB98F2B3a1bD"
+                target="_blank"
+                rel="noreferrer"
+              >
+                OpenSea
+              </a>
+              .
             </p>
             <p className="card-role">
               <strong>My role.</strong> Designed with Claude, end-to-end. Protocol design,
               Solidity (Foundry + Hardhat), NFC Java Card applet, a
               provisioner CLI that flashes blank cards over USB NFC via GlobalPlatform
               and mints the matching NFT, a The Graph subgraph,
-              and a React Native mobile client. Coming soon to Base Sepolia.
+              and a React Native mobile client.
             </p>
           </article>
         </section>
