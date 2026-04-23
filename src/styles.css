@@ -2,11 +2,12 @@
   --bg: #0a0a0b;
   --bg-alt: #111114;
   --ink: #ededee;
-  --ink-dim: #8a8a94;
+  --ink-dim: #b4b4bd;
   --gold: #d4a13a;
   --gold-bright: #f2c25b;
   --accent: #7cf2b8;
   --rule: #1e1e24;
+  --panel: rgba(17, 17, 20, 0.75);
   --max: 1080px;
   --mono: "JetBrains Mono", "SF Mono", ui-monospace, "Menlo", monospace;
 }
@@ -123,7 +124,7 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
   gap: 1rem;
 }
 .card {
-  background: rgba(17, 17, 20, 0.75);
+  background: var(--panel);
   border: 1px solid var(--rule);
   border-radius: 0;
   padding: 1.5rem;
@@ -223,6 +224,7 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
 .exp-content {
   padding: 1.25rem 1.5rem;
   border-left: 2px solid var(--gold);
+  background: var(--panel);
   flex: 1;
   min-width: 0;
 }
@@ -303,6 +305,7 @@ footer > span:first-child::before {
   padding: 1rem;
   border: 1px solid var(--rule);
   border-left: 2px solid var(--gold);
+  background: var(--panel);
 }
 .store-badges {
   display: flex;

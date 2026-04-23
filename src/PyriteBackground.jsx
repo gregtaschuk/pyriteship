@@ -3,11 +3,11 @@ import { useEffect, useRef } from 'react'
 const COS30 = Math.cos(Math.PI / 6)
 const SIN30 = 0.5
 
-const SHADE_TOP   = { dark: 'rgba(64, 54, 22, 0.9)', light: 'rgba(108, 92, 44, 0.9)' }
-const SHADE_RIGHT = { dark: 'rgba(32, 26, 10, 0.9)', light: 'rgba(58, 48, 20, 0.9)' }
-const SHADE_FRONT = { dark: 'rgba(14, 10, 4, 0.95)', light: 'rgba(26, 22, 8, 0.95)' }
-const RIM = 'rgba(168, 144, 76, 0.8)'
-const EDGE_DIM = 'rgba(0, 0, 0, 0.6)'
+const SHADE_TOP   = { dark: 'rgba(64, 54, 22, 0.9)',  light: 'rgba(108, 92, 44, 0.9)',  spec: 'rgba(196, 176, 118, 0.13)', kind: 'top'   }
+const SHADE_RIGHT = { dark: 'rgba(32, 26, 10, 0.9)',  light: 'rgba(60, 50, 20, 0.9)',   spec: 'rgba(160, 136, 82, 0.08)',  kind: 'right' }
+const SHADE_FRONT = { dark: 'rgba(14, 10, 4, 0.95)',  light: 'rgba(26, 22, 8, 0.95)',   spec: 'rgba(128, 104, 60, 0.06)',  kind: 'front' }
+const RIM = 'rgba(176, 152, 88, 0.75)'
+const EDGE_DIM = 'rgba(0, 0, 0, 0.55)'
 
 function project(x, y, z) {
   return {
@@ -41,11 +41,31 @@ function drawFace(ctx, face) {
   ctx.fillStyle = grad
   ctx.fill()
 
-  // Find the top-most edge (two vertices with smallest y) and highlight it.
   const verts = [s0, s1, s2, s3]
   const order = [0, 1, 2, 3].sort((a, b) => verts[a].y - verts[b].y)
   const topA = order[0]
   const topB = order[1]
+
+  const cx = (s0.x + s1.x + s2.x + s3.x) * 0.25
+  const cy = (s0.y + s1.y + s2.y + s3.y) * 0.25
+  if (face.shade.kind === 'top') {
+    const radius = Math.hypot(s2.x - s0.x, s2.y - s0.y) * 0.7
+    const spec = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius)
+    spec.addColorStop(0, face.shade.spec)
+    spec.addColorStop(1, 'rgba(0, 0, 0, 0)')
+    ctx.fillStyle = spec
+    ctx.fill()
+  } else {
+    const mx = (verts[topA].x + verts[topB].x) * 0.5
+    const my = (verts[topA].y + verts[topB].y) * 0.5
+    const bx = (verts[order[2]].x + verts[order[3]].x) * 0.5
+    const by = (verts[order[2]].y + verts[order[3]].y) * 0.5
+    const sheen = ctx.createLinearGradient(mx, my, bx, by)
+    sheen.addColorStop(0, face.shade.spec)
+    sheen.addColorStop(0.65, 'rgba(0, 0, 0, 0)')
+    ctx.fillStyle = sheen
+    ctx.fill()
+  }
   const edges = [[0, 1], [1, 2], [2, 3], [3, 0]]
   ctx.lineWidth = 0.75
   ctx.strokeStyle = EDGE_DIM
@@ -150,9 +170,12 @@ export default function PyriteBackground() {
     const ctx = canvas.getContext('2d')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
+    const densityPerViewport = isMobile ? 6 : 14
+    const maxCrystals = isMobile ? 20 : Infinity
+
     let width = 0, height = 0, worldHeight = 0, dpr = 1
     const crystals = []
-    const densityPerViewport = 14
     let targetCount = densityPerViewport
 
     const measureWorldHeight = () =>
@@ -167,7 +190,10 @@ export default function PyriteBackground() {
       width = window.innerWidth
       height = window.innerHeight
       worldHeight = measureWorldHeight()
-      targetCount = Math.round(densityPerViewport * (worldHeight / height))
+      targetCount = Math.min(
+        maxCrystals,
+        Math.round(densityPerViewport * (worldHeight / height)),
+      )
       canvas.width = Math.floor(width * dpr)
       canvas.height = Math.floor(height * dpr)
       canvas.style.width = width + 'px'
@@ -181,13 +207,17 @@ export default function PyriteBackground() {
       return Math.max(0.08, c.baseMass * (0.25 + 0.75 * scale))
     }
 
-    const applyTension = (dt, linksOut) => {
+    const applyTension = (dt, linksOut, viewport) => {
       const n = crystals.length
+      const cullTop = viewport ? viewport.top - height : -Infinity
+      const cullBot = viewport ? viewport.bot + height : Infinity
       for (let i = 0; i < n; i++) {
         const a = crystals[i]
+        const aOff = a.y < cullTop || a.y > cullBot
         const mA = effectiveMass(a)
         for (let j = i + 1; j < n; j++) {
           const b = crystals[j]
+          if (aOff && (b.y < cullTop || b.y > cullBot)) continue
           const dx = b.x - a.x
           const dy = b.y - a.y
           const d2 = dx * dx + dy * dy + 1
@@ -241,8 +271,10 @@ export default function PyriteBackground() {
     }
     activationTimes.sort((a, b) => a - b)
 
+    const TIME_SCALE = 0.42
     const startTime = performance.now()
     let last = startTime
+    let simTime = 0
     let raf = 0
     const links = []
 
@@ -282,16 +314,16 @@ export default function PyriteBackground() {
     }
 
     const frame = (now) => {
-      const dt = Math.min((now - last) / 1000, 0.1)
+      const dt = Math.min((now - last) / 1000, 0.1) * TIME_SCALE
       last = now
+      simTime += dt
 
       ctx.clearRect(0, 0, width, height)
       const scrollY = window.scrollY || window.pageYOffset || 0
 
-      const elapsed = (now - startTime) / 1000
       let activated = 0
       for (let i = 0; i < activationTimes.length; i++) {
-        if (activationTimes[i] <= elapsed) activated++
+        if (activationTimes[i] <= simTime) activated++
         else break
       }
       const currentTarget = startCount + activated
@@ -299,7 +331,7 @@ export default function PyriteBackground() {
       if (crystals.length > currentTarget) crystals.length = currentTarget
 
       links.length = 0
-      applyTension(dt, links)
+      applyTension(dt, links, { top: scrollY, bot: scrollY + height })
       drawLinks(scrollY)
 
       for (let i = crystals.length - 1; i >= 0; i--) {
@@ -333,7 +365,7 @@ export default function PyriteBackground() {
       ctx.clearRect(0, 0, width, height)
       const scrollY = window.scrollY || window.pageYOffset || 0
       links.length = 0
-      applyTension(1 / 60, links)
+      applyTension(1 / 60, links, { top: scrollY, bot: scrollY + height })
       drawLinks(scrollY)
       for (const c of crystals) {
         const screenY = c.y - scrollY
