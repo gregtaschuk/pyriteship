@@ -1,3 +1,4 @@
+import { Outlet, useLocation } from 'react-router-dom'
 import PyriteBackground from './PyriteBackground.jsx'
 
 function scrollToId(id) {
@@ -10,8 +11,10 @@ function scrollToId(id) {
   }
 }
 
-export default function Layout({ page, children }) {
-  const isHome = page === 'home'
+export default function Layout() {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/' || pathname === ''
+  const isProjects = pathname === '/projects'
   return (
     <>
       <PyriteBackground />
@@ -31,14 +34,14 @@ export default function Layout({ page, children }) {
           ) : (
             <>
               <a href="#/">home</a>
-              <a href="#/projects" aria-current="page">projects</a>
+              <a href="#/projects" aria-current={isProjects ? 'page' : undefined}>projects</a>
               <a href="mailto:greg@pyrite.rocks" className="cta">gm →</a>
             </>
           )}
         </nav>
       </header>
 
-      {children}
+      <Outlet />
 
       <footer>
         <span>◆ pyrite consulting llc · {new Date().getFullYear()}</span>

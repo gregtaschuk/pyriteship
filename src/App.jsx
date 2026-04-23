@@ -1,9 +1,6 @@
-import Layout from './Layout.jsx'
-
 export default function App() {
   return (
-    <Layout page="home">
-      <main id="top">
+    <main id="top">
         <section className="hero">
           <p className="eyebrow">// blockchain architecture · system design · rapid prototyping</p>
           <h1>
@@ -173,7 +170,6 @@ export default function App() {
           </a>
         </section>
       </main>
-    </Layout>
   )
 }
 

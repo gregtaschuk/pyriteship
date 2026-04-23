@@ -1,9 +1,6 @@
-import Layout from './Layout.jsx'
-
 export default function Projects() {
   return (
-    <Layout page="projects">
-      <main id="top">
+    <main id="top">
         <section className="hero hero-compact">
           <p className="eyebrow">// selected work</p>
           <h1>
@@ -214,6 +211,5 @@ export default function Projects() {
           </a>
         </section>
       </main>
-    </Layout>
   )
 }
