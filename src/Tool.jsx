@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Layout from './Layout.jsx'
 
 // TODO: point at the hosted tool-rental subgraph once it's deployed.
 // Until then, /tools/<cardKeyHash> will surface the "couldn't load" state.
@@ -77,14 +76,12 @@ export default function Tool() {
   }, [valid, cardKeyHashArg])
 
   return (
-    <Layout page="tool">
-      <main id="top">
-        <section className="hero hero-compact">
-          <p className="eyebrow">// tool rental · nfc card</p>
-          <ToolBody state={state} cardKeyHash={cardKeyHash} valid={valid} />
-        </section>
-      </main>
-    </Layout>
+    <main id="top">
+      <section className="hero hero-compact">
+        <p className="eyebrow">// tool rental · nfc card</p>
+        <ToolBody state={state} cardKeyHash={cardKeyHash} valid={valid} />
+      </section>
+    </main>
   )
 }
 
