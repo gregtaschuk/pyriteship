@@ -1,30 +1,66 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
-// TODO: point at the hosted tool-rental subgraph once it's deployed.
-// Until then, /tools/<cardKeyHash> will surface the "couldn't load" state.
-const SUBGRAPH_URL = 'http://localhost:8000/subgraphs/name/tool-rental/tool-rental'
-const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
+const SUBGRAPH_URL =
+  import.meta.env.VITE_SUBGRAPH_URL ||
+  'https://api.studio.thegraph.com/query/1748423/tool-rental/v0.0.1'
+const IPFS_GATEWAY = import.meta.env.VITE_IPFS_GATEWAY || 'https://pyrite.mypinata.cloud'
 
 const QUERY = `
   query ToolByCardKeyHash($cardKeyHash: Bytes!) {
     tools(where: { cardKeyHash: $cardKeyHash }, first: 1) {
       id
       owner
+      cardKeyHash
       metadataUri
       metadata { name description image }
       offer {
         active
-        metadata { minimumFee dailyRate borrowerDeposit }
+        nonce
+        lender
+        metadata {
+          id
+          minimumFee
+          dailyRate
+          borrowerDeposit
+          gracePeriod
+          signature
+          lender
+          borrower
+        }
       }
     }
   }
 `
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 function resolveIpfs(uri) {
   if (!uri) return null
-  if (uri.startsWith('ipfs://')) return IPFS_GATEWAY + uri.slice('ipfs://'.length)
+  if (uri.startsWith('ipfs://')) return `${IPFS_GATEWAY}/ipfs/${uri.slice('ipfs://'.length)}`
   return uri
+}
+
+// `?o=<value>` carries either a legacy IPFS CID or, in the current flow, a
+// base64url-encoded `{...offer, signature}` blob. Inline payloads are always
+// far longer than 64 chars; CIDs start with `Qm` (v0) or `bafy` (v1).
+function looksLikeIpfsCid(value) {
+  if (!value || value.length > 64) return false
+  return /^Qm[1-9A-HJ-NP-Za-km-z]{44}$/.test(value) || /^bafy[A-Za-z0-9]+$/.test(value)
+}
+
+function decodeOfferFromLink(encoded) {
+  try {
+    const padded = encoded.replace(/-/g, '+').replace(/_/g, '/')
+    const padLen = (4 - (padded.length % 4)) % 4
+    const standard = padded + '='.repeat(padLen)
+    const json = decodeURIComponent(escape(atob(standard)))
+    const obj = JSON.parse(json)
+    if (typeof obj?.signature !== 'string' || typeof obj?.tokenId !== 'string') return null
+    return obj
+  } catch {
+    return null
+  }
 }
 
 function truncateAddr(addr) {
@@ -42,13 +78,30 @@ function formatUsdc(raw) {
   }
 }
 
+function gracePeriodLabel(seconds) {
+  if (seconds == null) return null
+  const days = Number(seconds) / 86400
+  if (!Number.isFinite(days)) return null
+  if (days >= 1) {
+    const rounded = Math.round(days * 10) / 10
+    return `${rounded} day${rounded === 1 ? '' : 's'}`
+  }
+  const hours = Math.round((Number(seconds) / 3600) * 10) / 10
+  return `${hours} hour${hours === 1 ? '' : 's'}`
+}
+
 export default function Tool() {
   const { cardKeyHash } = useParams()
+  const [searchParams] = useSearchParams()
+  const offerParam = searchParams.get('o')
+
   const valid = typeof cardKeyHash === 'string' && /^[0-9a-f]{64}$/.test(cardKeyHash)
   const cardKeyHashArg = valid ? '0x' + cardKeyHash : null
 
   const [state, setState] = useState({ status: valid ? 'loading' : 'invalid', tool: null, error: null })
+  const [linkedOffer, setLinkedOffer] = useState({ status: 'idle', data: null, error: null })
 
+  // Subgraph fetch — gets tool name + current offer terms.
   useEffect(() => {
     if (!valid) return
     let cancelled = false
@@ -75,17 +128,60 @@ export default function Tool() {
     return () => { cancelled = true }
   }, [valid, cardKeyHashArg])
 
+  // Optional ?o=<value> resolution — when a lender shares a link to a
+  // specific signed offer, render those exact terms even if the subgraph
+  // hasn't indexed them (or if the lender has since rotated the nonce).
+  // The value is either a legacy IPFS CID (fetched) or an inline base64url-
+  // encoded offer (decoded synchronously, no network).
+  useEffect(() => {
+    if (!offerParam) {
+      setLinkedOffer({ status: 'idle', data: null, error: null })
+      return
+    }
+    if (!looksLikeIpfsCid(offerParam)) {
+      const decoded = decodeOfferFromLink(offerParam)
+      if (decoded) {
+        setLinkedOffer({ status: 'loaded', data: decoded, error: null })
+      } else {
+        setLinkedOffer({ status: 'error', data: null, error: 'invalid shared offer' })
+      }
+      return
+    }
+    let cancelled = false
+    setLinkedOffer({ status: 'loading', data: null, error: null })
+    fetch(`${IPFS_GATEWAY}/ipfs/${offerParam}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`ipfs gateway responded ${res.status}`)
+        return res.json()
+      })
+      .then((data) => {
+        if (cancelled) return
+        setLinkedOffer({ status: 'loaded', data, error: null })
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setLinkedOffer({ status: 'error', data: null, error: err.message })
+      })
+    return () => { cancelled = true }
+  }, [offerParam])
+
   return (
     <main id="top">
       <section className="hero hero-compact">
         <p className="eyebrow">// tool rental · nfc card</p>
-        <ToolBody state={state} cardKeyHash={cardKeyHash} valid={valid} />
+        <ToolBody
+          state={state}
+          linkedOffer={linkedOffer}
+          cardKeyHash={cardKeyHash}
+          offerParam={offerParam}
+          valid={valid}
+        />
       </section>
     </main>
   )
 }
 
-function ToolBody({ state, cardKeyHash, valid }) {
+function ToolBody({ state, linkedOffer, cardKeyHash, offerParam, valid }) {
   if (!valid) {
     return (
       <>
@@ -113,7 +209,7 @@ function ToolBody({ state, cardKeyHash, valid }) {
         <h1>couldn't load this tool.</h1>
         <p className="lede">The subgraph didn't respond. Try again in a moment.</p>
         <p className="section-footnote"><code>{state.error}</code></p>
-        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} offerParam={offerParam} />
       </>
     )
   }
@@ -126,7 +222,7 @@ function ToolBody({ state, cardKeyHash, valid }) {
           This card is valid but no tool has been minted against it yet. If you're
           the owner, finish provisioning in the Tool Rental app.
         </p>
-        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} offerParam={offerParam} />
       </>
     )
   }
@@ -135,8 +231,32 @@ function ToolBody({ state, cardKeyHash, valid }) {
   const name = tool.metadata?.name || `Tool #${tool.id}`
   const image = resolveIpfs(tool.metadata?.image)
   const description = tool.metadata?.description
-  const offer = tool.offer
-  const dailyRate = offer?.active ? formatUsdc(offer.metadata?.dailyRate) : null
+
+  // Effective offer: prefer the linked ?o=<cid> payload when it loads, fall
+  // back to the subgraph's current offer. The linked offer survives nonce
+  // rotation; the subgraph offer reflects whatever the lender most recently
+  // published.
+  const subgraphOfferActive = tool.offer?.active === true
+  const subgraphOffer = subgraphOfferActive ? tool.offer?.metadata : null
+  const linkedOfferData = linkedOffer.status === 'loaded' ? linkedOffer.data : null
+
+  // Validate that a linked offer matches this card's tool — if it doesn't,
+  // ignore it and fall back to the subgraph offer with a warning.
+  const linkedTokenMismatch = linkedOfferData
+    && linkedOfferData.tokenId != null
+    && String(linkedOfferData.tokenId) !== String(tool.id)
+  const usableLinkedOffer = linkedOfferData && !linkedTokenMismatch ? linkedOfferData : null
+
+  const effectiveOffer = usableLinkedOffer ?? subgraphOffer
+  const offerSource = usableLinkedOffer ? 'link' : (subgraphOffer ? 'current' : null)
+
+  const minimumFee = formatUsdc(effectiveOffer?.minimumFee)
+  const dailyRate = formatUsdc(effectiveOffer?.dailyRate)
+  const deposit = formatUsdc(effectiveOffer?.borrowerDeposit)
+  const grace = gracePeriodLabel(effectiveOffer?.gracePeriod)
+  const targetedBorrower = effectiveOffer?.borrower && effectiveOffer.borrower !== ZERO_ADDRESS
+    ? effectiveOffer.borrower
+    : null
 
   return (
     <>
@@ -156,25 +276,52 @@ function ToolBody({ state, cardKeyHash, valid }) {
           owner · <code>{truncateAddr(tool.owner)}</code>
         </p>
 
-        <p className="tool-listing">
-          {offer?.active ? (
-            <>
-              <strong className="accent">Available to rent</strong>
+        {effectiveOffer ? (
+          <>
+            <p className="tool-listing">
+              <strong className="accent">
+                {offerSource === 'link' ? 'Shared offer' : 'Available to rent'}
+              </strong>
               {dailyRate && <> · {dailyRate} USDC / day</>}
-            </>
-          ) : (
-            <strong>Not currently listed.</strong>
-          )}
-        </p>
+            </p>
+            <ul className="card-stack tool-terms">
+              {minimumFee && <li>minimum fee · <strong>{minimumFee} USDC</strong></li>}
+              {dailyRate && <li>daily rate · <strong>{dailyRate} USDC</strong></li>}
+              {deposit && <li>refundable deposit · <strong>{deposit} USDC</strong></li>}
+              {grace && <li>grace period · <strong>{grace}</strong></li>}
+              {targetedBorrower && (
+                <li>private offer for · <code>{truncateAddr(targetedBorrower)}</code></li>
+              )}
+            </ul>
+          </>
+        ) : (
+          <p className="tool-listing"><strong>Not currently listed.</strong></p>
+        )}
 
-        <DeepLinkAndStores cardKeyHash={cardKeyHash} />
+        {linkedTokenMismatch && (
+          <p className="section-footnote">
+            ⚠ shared link's offer doesn't match this card — showing this card's
+            current offer instead.
+          </p>
+        )}
+        {linkedOffer.status === 'loading' && (
+          <p className="section-footnote">loading shared offer from IPFS…</p>
+        )}
+        {linkedOffer.status === 'error' && (
+          <p className="section-footnote">
+            couldn't load shared offer · <code>{linkedOffer.error}</code>
+          </p>
+        )}
+
+        <DeepLinkAndStores cardKeyHash={cardKeyHash} offerParam={offerParam} />
       </article>
     </>
   )
 }
 
-function DeepLinkAndStores({ cardKeyHash }) {
-  const appUrl = `toolrental://card/${cardKeyHash}`
+function DeepLinkAndStores({ cardKeyHash, offerParam }) {
+  const suffix = offerParam ? `?o=${offerParam}` : ''
+  const appUrl = `toolrental://card/${cardKeyHash}${suffix}`
   return (
     <>
       <div className="hero-cta">
