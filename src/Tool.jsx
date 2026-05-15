@@ -307,11 +307,6 @@ function ToolBody({ state, linkedOffer, cardKeyHash, offerParam, valid }) {
         {linkedOffer.status === 'loading' && (
           <p className="section-footnote">loading shared offer from IPFS…</p>
         )}
-        {linkedOffer.status === 'error' && (
-          <p className="section-footnote">
-            couldn't load shared offer · <code>{linkedOffer.error}</code>
-          </p>
-        )}
 
         <DeepLinkAndStores cardKeyHash={cardKeyHash} offerParam={offerParam} />
       </article>
