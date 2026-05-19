@@ -217,10 +217,13 @@ function ToolBody({ state, linkedOffer, cardKeyHash, offerParam, valid }) {
   if (state.status === 'unregistered') {
     return (
       <>
-        <h1>card not registered yet.<br/><span className="accent">no tool bound.</span></h1>
+        <h1>blank tool card.<br/><span className="accent">make it a rental in minutes.</span></h1>
         <p className="lede">
-          This card is valid but no tool has been minted against it yet. If you're
-          the owner, finish provisioning in the Tool Rental app.
+          This card is unbound and waiting for a tool. Open the Tool Rental app,
+          tap the card, and mint — name your tool, add a photo, set a daily rate
+          and deposit. It's listed on Base the moment the tx confirms. Lend out
+          anything (kayak, drill, camera) and earn crypto. The card itself
+          proves every handoff on-chain.
         </p>
         <DeepLinkAndStores cardKeyHash={cardKeyHash} offerParam={offerParam} />
       </>
