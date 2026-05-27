@@ -1,11 +1,15 @@
 {
-  "applinks": {
-    "apps": [],
-    "details": [
-      {
-        "appID": "TEAMID.com.toolrental",
-        "paths": ["/tools/*"]
-      }
-    ]
-  }
+	"applinks": {
+		"details": [
+		{
+			"appIDs": ["8KM2YJPR25.com.pyrite.rental"],
+			"components": [
+			{
+				"/": "/tools/*",
+				"comment": "Tool detail + NFC card share-link paths (mirrors the assetlinks.json autoVerify config for Android)"
+			}
+			]
+		}
+		]
+	}
 }
