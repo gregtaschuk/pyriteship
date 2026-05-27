@@ -23,6 +23,11 @@ export default function App() {
               className="btn btn-ghost"
               onClick={(e) => { e.preventDefault(); document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' }) }}
             >what I do →</a>
+            <a
+              href="#/"
+              className="btn btn-ghost"
+              onClick={(e) => { e.preventDefault(); document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' }) }}
+            >what I've done →</a>
           </div>
         </section>
 
