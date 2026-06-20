@@ -5,6 +5,7 @@ import Layout from './Layout.jsx'
 import App from './App.jsx'
 import Projects from './Projects.jsx'
 import Tool from './Tool.jsx'
+import Tag from './Tag.jsx'
 import './styles.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/tools/:cardKeyHash" element={<Tool />} />
+          <Route path="/tag" element={<Tag />} />
         </Route>
       </Routes>
     </HashRouter>
