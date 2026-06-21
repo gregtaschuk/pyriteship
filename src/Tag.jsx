@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 // NTAG 424 DNA tags emit an SDM URL of the form
 //   https://pyrite.rocks/tag?picc=<32 hex>&cmac=<16 hex>
@@ -12,24 +12,25 @@ const PICC_RE = /^[0-9a-fA-F]{32}$/
 const CMAC_RE = /^[0-9a-fA-F]{16}$/
 
 export default function Tag() {
+  const { uid } = useParams()
   const [searchParams] = useSearchParams()
   const picc = searchParams.get('picc')
   const cmac = searchParams.get('cmac')
 
-  const hasParams = picc != null || cmac != null
+  const hasParams = uid != null || picc != null || cmac != null
   const wellFormed = PICC_RE.test(picc || '') && CMAC_RE.test(cmac || '')
 
   return (
     <main id="top">
       <section className="hero hero-compact">
         <p className="eyebrow">// tool rental · nfc tag</p>
-        <TagBody hasParams={hasParams} wellFormed={wellFormed} />
+        <TagBody uid={uid} hasParams={hasParams} wellFormed={wellFormed} />
       </section>
     </main>
   )
 }
 
-function TagBody({ hasParams, wellFormed }) {
+function TagBody({ uid, hasParams, wellFormed }) {
   if (!hasParams) {
     return (
       <>
@@ -51,6 +52,11 @@ function TagBody({ hasParams, wellFormed }) {
         <div className="tool-image">
           <div className="tool-image-placeholder">◆</div>
         </div>
+        {uid && (
+          <p className="tool-listing">
+            <span className="monospace accent">{uid}</span>
+          </p>
+        )}
         <p>
           This is a Tool Rental NFC tag — the tap above carried a one-time
           secure code{wellFormed ? '' : ', though it looks incomplete'}.
