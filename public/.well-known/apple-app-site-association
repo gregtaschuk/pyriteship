@@ -1,0 +1,27 @@
+{
+	"applinks": {
+		"details": [
+			{
+				"appIDs": ["8KM2YJPR25.com.pyrite.rental"],
+				"components": [
+					{
+						"/": "/tools/*",
+						"comment": "Tool detail + NFC JavaCard share-link paths"
+					},
+					{
+						"/": "/t/*",
+						"comment": "Honor-system tool deep links (decimal tokenId)"
+					},
+					{
+						"/": "/tag",
+						"comment": "NTAG 424 tag tap, query-only form (?picc=&cmac=)"
+					},
+					{
+						"/": "/tag/*",
+						"comment": "NTAG 424 tag tap with uid in the path (/tag/<uid>?picc=&cmac=)"
+					}
+				]
+			}
+		]
+	}
+}

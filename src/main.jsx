@@ -17,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/projects" element={<Projects />} />
           <Route path="/tools/:cardKeyHash" element={<Tool />} />
           <Route path="/tag" element={<Tag />} />
+          <Route path="/tag/:uid" element={<Tag />} />
         </Route>
       </Routes>
     </HashRouter>
